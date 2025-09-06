@@ -34,14 +34,6 @@ impl Language for Cpp {
 
         let mut body: Vec<u8> = Vec::new();
 
-        for s in structs {
-            self.write_struct(&mut body, &s)?;
-        }
-
-        for e in enums {
-            self.write_enum(&mut body, &e)?;
-        }
-
         for a in aliases {
             self.write_type_alias(&mut body, &a)?;
         }
@@ -50,8 +42,24 @@ impl Language for Cpp {
             self.write_const(&mut body, &c)?;
         }
 
+        for e in enums {
+            // TODO - implement enum generation
+            self.write_enum(&mut body, &e)?;
+        }
+
+        for s in structs {
+            self.write_struct(&mut body, &s)?;
+            writeln!(&mut body)?;
+        }
+
         self.write_all_imports(w)?;
+
+        // Remove the final newline if present
+        if body.ends_with(b"\n") {
+            body.pop();
+        }
         w.write_all(&body)?;
+
         self.end_file(w)
     }
 
@@ -59,6 +67,7 @@ impl Language for Cpp {
         &self.type_mappings
     }
 
+    // TODO - add all imports + initialise where appropriate
     fn format_special_type(
         &mut self,
         special_ty: &SpecialRustType,

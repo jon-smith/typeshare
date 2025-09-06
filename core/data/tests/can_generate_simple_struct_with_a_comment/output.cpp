@@ -3,6 +3,7 @@
 
 struct Location {
 };
+
 struct Person {
     std::string name;
     uint8_t age;
