@@ -166,6 +166,9 @@ macro_rules! output_file_for_ident {
     (python) => {
         "output.py"
     };
+    (cpp) => {
+        "output.cpp"
+    };
 }
 
 /// Simplifies the construction of `Language` instances for each language.
@@ -295,6 +298,20 @@ macro_rules! language_instance {
              package: "proto".to_string(),
              no_version_header: true,
              $($field: $val,)*
+            ..Default::default()
+        })
+    };
+
+    // Default C++
+    (cpp) => {
+        language_instance!(cpp { })
+    };
+
+    // C++ with configuration fields forwarded
+    (cpp {$($field:ident: $val:expr),* $(,)?}) => {
+        #[allow(clippy::needless_update)]
+        Box::new(typeshare_core::language::Cpp {
+            $($field: $val,)*
             ..Default::default()
         })
     };
@@ -571,7 +588,7 @@ tests! {
     can_override_types: [swift, kotlin, scala, typescript, go];
 
     /// Structs
-    can_generate_simple_struct_with_a_comment: [kotlin, swift, typescript, scala, go, python];
+    can_generate_simple_struct_with_a_comment: [kotlin, swift, typescript, scala, go, python, cpp];
     generate_types: [kotlin, swift, typescript, scala,  go, python];
     can_handle_serde_rename: [
         swift {

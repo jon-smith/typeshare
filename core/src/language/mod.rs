@@ -19,14 +19,15 @@ use std::{
     str::FromStr,
 };
 
+mod cpp;
 mod go;
 mod kotlin;
 mod python;
 mod scala;
 mod swift;
 mod typescript;
-mod cpp;
 
+pub use cpp::Cpp;
 pub use go::Go;
 pub use kotlin::Kotlin;
 pub use python::Python;
@@ -34,7 +35,6 @@ pub use scala::Scala;
 pub use swift::GenericConstraints;
 pub use swift::Swift;
 pub use typescript::TypeScript;
-pub use cpp::Cpp;
 
 #[derive(Debug, Default, Clone, PartialEq, Eq, Hash, Ord, PartialOrd)]
 /// A crate name.
@@ -112,7 +112,7 @@ impl SupportedLanguage {
     /// Returns an iterator over all supported language variants.
     pub fn all_languages() -> impl Iterator<Item = Self> {
         use SupportedLanguage::*;
-        [Go, Kotlin, Scala, Swift, TypeScript, Python].into_iter()
+        [Go, Kotlin, Scala, Swift, TypeScript, Python, Cpp].into_iter()
     }
 
     /// Get the file name extension for the supported language.

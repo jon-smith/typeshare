@@ -4,11 +4,14 @@ use crate::rust_types::RustConstExpr;
 use crate::rust_types::RustTypeFormatError;
 use crate::rust_types::SpecialRustType;
 use crate::RenameExt;
+use std::collections::BTreeSet;
 use std::collections::HashMap;
 use std::io::Write;
 
 #[derive(Default)]
 pub struct Cpp {
+    /// std library headers
+    pub imports: BTreeSet<String>,
     pub type_mappings: HashMap<String, String>,
 }
 
@@ -29,22 +32,26 @@ impl Language for Cpp {
             ..
         } = data;
 
+        let mut body: Vec<u8> = Vec::new();
+
         for s in structs {
-            self.write_struct(w, &s)?;
+            self.write_struct(&mut body, &s)?;
         }
 
         for e in enums {
-            self.write_enum(w, &e)?;
+            self.write_enum(&mut body, &e)?;
         }
 
         for a in aliases {
-            self.write_type_alias(w, &a)?;
+            self.write_type_alias(&mut body, &a)?;
         }
 
         for c in consts {
-            self.write_const(w, &c)?;
+            self.write_const(&mut body, &c)?;
         }
 
+        self.write_all_imports(w)?;
+        w.write_all(&body)?;
         self.end_file(w)
     }
 
@@ -59,6 +66,7 @@ impl Language for Cpp {
     ) -> Result<String, RustTypeFormatError> {
         Ok(match special_ty {
             SpecialRustType::Vec(rtype) => {
+                self.add_import("vector");
                 format!("std::vector<{}>", self.format_type(rtype, generic_types)?)
             }
             SpecialRustType::Array(rtype, len) => {
@@ -162,5 +170,25 @@ impl Language for Cpp {
                 )
             }
         }
+    }
+}
+
+impl Cpp {
+    fn add_import(&mut self, name: &str) {
+        self.imports.insert(name.to_string());
+    }
+
+    fn write_all_imports(&self, w: &mut dyn Write) -> std::io::Result<()> {
+        let mut imports = self.imports.iter().cloned().collect::<Vec<String>>();
+        imports.sort();
+        match imports.as_slice() {
+            [] => return Ok(()),
+            _ => {
+                for import in imports {
+                    writeln!(w, "#include <{import}>")?;
+                }
+            }
+        }
+        writeln!(w)
     }
 }
