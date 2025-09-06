@@ -11,3 +11,4 @@ struct Person {
     std::vector<std::string> emails;
     Location location;
 };
+

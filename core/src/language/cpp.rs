@@ -53,13 +53,7 @@ impl Language for Cpp {
         }
 
         self.write_all_imports(w)?;
-
-        // Remove the final newline if present
-        if body.ends_with(b"\n") {
-            body.pop();
-        }
         w.write_all(&body)?;
-
         self.end_file(w)
     }
 
@@ -172,9 +166,9 @@ impl Language for Cpp {
                     .map_err(std::io::Error::other)?;
                 writeln!(
                     w,
-                    "constexpr {}: {} = {};",
-                    c.id.renamed.to_snake_case().to_uppercase(),
+                    "constexpr {} {} = {};",
                     const_type,
+                    c.id.renamed.to_snake_case().to_uppercase(),
                     val
                 )
             }
