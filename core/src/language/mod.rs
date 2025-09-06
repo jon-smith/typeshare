@@ -25,6 +25,7 @@ mod python;
 mod scala;
 mod swift;
 mod typescript;
+mod cpp;
 
 pub use go::Go;
 pub use kotlin::Kotlin;
@@ -33,6 +34,7 @@ pub use scala::Scala;
 pub use swift::GenericConstraints;
 pub use swift::Swift;
 pub use typescript::TypeScript;
+pub use cpp::Cpp;
 
 #[derive(Debug, Default, Clone, PartialEq, Eq, Hash, Ord, PartialOrd)]
 /// A crate name.
@@ -103,6 +105,7 @@ pub enum SupportedLanguage {
     Swift,
     TypeScript,
     Python,
+    Cpp,
 }
 
 impl SupportedLanguage {
@@ -121,6 +124,7 @@ impl SupportedLanguage {
             SupportedLanguage::Swift => "swift",
             SupportedLanguage::TypeScript => "ts",
             SupportedLanguage::Python => "py",
+            SupportedLanguage::Cpp => "cpp",
         }
     }
 }
@@ -136,6 +140,7 @@ impl FromStr for SupportedLanguage {
             "swift" => Ok(Self::Swift),
             "typescript" => Ok(Self::TypeScript),
             "python" => Ok(Self::Python),
+            "cpp" => Ok(Self::Cpp),
             _ => Err(ParseError::UnsupportedLanguage(s.into())),
         }
     }
