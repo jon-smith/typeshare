@@ -93,16 +93,46 @@ impl Language for Cpp {
             SpecialRustType::Unit => "void".into(),
             SpecialRustType::String => "std::string".into(),
             SpecialRustType::Char => "char".into(),
-            SpecialRustType::I8 => "int8_t".into(),
-            SpecialRustType::U8 => "uint8_t".into(),
-            SpecialRustType::I16 => "int16_t".into(),
-            SpecialRustType::U16 => "uint16_t".into(),
-            SpecialRustType::I32 => "int32_t".into(),
-            SpecialRustType::U32 => "uint32_t".into(),
-            SpecialRustType::I54 | SpecialRustType::I64 => "int64_t".into(),
-            SpecialRustType::U53 | SpecialRustType::U64 => "uint64_t".into(),
-            SpecialRustType::ISize => "intptr_t".into(),
-            SpecialRustType::USize => "uintptr_t".into(),
+            SpecialRustType::I8 => {
+                self.add_import("cstdint");
+                "int8_t".into()
+            }
+            SpecialRustType::U8 => {
+                self.add_import("cstdint");
+                "uint8_t".into()
+            }
+            SpecialRustType::I16 => {
+                self.add_import("cstdint");
+                "int16_t".into()
+            }
+            SpecialRustType::U16 => {
+                self.add_import("cstdint");
+                "uint16_t".into()
+            }
+            SpecialRustType::I32 => {
+                self.add_import("cstdint");
+                "int32_t".into()
+            }
+            SpecialRustType::U32 => {
+                self.add_import("cstdint");
+                "uint32_t".into()
+            }
+            SpecialRustType::I54 | SpecialRustType::I64 => {
+                self.add_import("cstdint");
+                "int64_t".into()
+            }
+            SpecialRustType::U53 | SpecialRustType::U64 => {
+                self.add_import("cstdint");
+                "uint64_t".into()
+            }
+            SpecialRustType::ISize => {
+                self.add_import("cstdint");
+                "intptr_t".into()
+            }
+            SpecialRustType::USize => {
+                self.add_import("cstdint");
+                "uintptr_t".into()
+            }
             SpecialRustType::Bool => "bool".into(),
             SpecialRustType::F32 => "float".into(),
             SpecialRustType::F64 => "double".into(),
